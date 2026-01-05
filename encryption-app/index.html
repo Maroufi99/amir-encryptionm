@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4a6ee0">
+    <title>سایت چت رمزنگاری امیر - امن و آفلاین</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-96x96.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body class="light-theme">
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>سایت چت رمزنگاری امیر</h1>
+                        <p class="tagline">رمزنگاری پیام‌ها با امنیت بالا • کاملاً آفلاین</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button id="themeToggle" class="theme-btn" title="تغییر تم">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="tabs-wrapper">
+        <div class="container">
+            <nav class="main-tabs">
+                <button class="tab-btn active" data-tab="encrypt">
+                    <i class="fas fa-lock"></i>
+                    <span>رمزنگاری</span>
+                </button>
+                <button class="tab-btn" data-tab="decrypt">
+                    <i class="fas fa-unlock"></i>
+                    <span>رمزگشایی</span>
+                </button>
+                <button class="tab-btn" data-tab="qr">
+                    <i class="fas fa-qrcode"></i>
+                    <span>QR Code</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- بخش رمزنگاری -->
+            <section id="encryptSection" class="content-section active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-lock"></i> رمزنگاری پیام</h2>
+                        <p class="card-subtitle">پیام خود را وارد کنید تا رمزنگاری شود</p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label for="plainText">
+                                <i class="fas fa-edit"></i>
+                                متن پیام:
+                            </label>
+                            <div class="textarea-wrapper">
+                                <textarea 
+                                    id="plainText" 
+                                    placeholder="متن یا لینک خود را اینجا وارد کنید..." 
+                                    rows="6"
+                                    maxlength="2000"
+                                ></textarea>
+                                <div class="textarea-footer">
+                                    <span class="char-count">
+                                        <span id="charCount">0</span> / 2000 کاراکتر
+                                    </span>
+                                    <button class="clear-btn" id="clearTextBtn">
+                                        <i class="fas fa-times"></i> پاک کردن
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="encryptBtn" class="btn-primary btn-large">
+                                <i class="fas fa-lock"></i>
+                                <span>رمزنگاری پیام</span>
+                            </button>
+                            <button id="pasteBtn" class="btn-secondary">
+                                <i class="fas fa-paste"></i>
+                                <span>پیست از کلیپ‌بورد</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- نتیجه رمزنگاری -->
+                <div id="encryptResult" class="result-container" style="display: none;">
+                    <div class="card success-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-check-circle"></i> پیام رمز شده</h2>
+                            <div class="badge success">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>آماده ارسال</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="encrypted-output-wrapper">
+                                <div class="output-header">
+                                    <h3><i class="fas fa-file-code"></i> متن رمز شده:</h3>
+                                </div>
+                                
+                                <div class="output-box">
+                                    <textarea 
+                                        id="encryptedOutput" 
+                                        readonly 
+                                        rows="4"
+                                        placeholder="پیام رمز شده اینجا نمایش داده می‌شود..."
+                                    ></textarea>
+                                    <div class="output-actions">
+                                        <button id="copyEncryptedBtn" class="btn-success">
+                                            <i class="fas fa-copy"></i>
+                                            <span>کپی پیام</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- کلید تولید شده -->
+                                <div class="generated-key-section">
+                                    <h3><i class="fas fa-key"></i> کلید امنیتی:</h3>
+                                    <div class="key-display">
+                                        <div class="key-box">
+                                            <code id="generatedKey">در حال تولید...</code>
+                                            <div class="key-actions">
+                                                <button id="copyKeyBtn" class="btn-small">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <p class="key-instruction">
+                                            <i class="fas fa-info-circle"></i>
+                                            این کلید را برای رمزگشایی به گیرنده بدهید
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- گزینه‌های اشتراک‌گذاری -->
+                                <div class="share-options">
+                                    <h3><i class="fas fa-share-alt"></i> اشتراک‌گذاری:</h3>
+                                    <div class="share-buttons">
+                                        <button id="shareQRBtn" class="btn-qr">
+                                            <i class="fas fa-qrcode"></i>
+                                            <span>ایجاد QR Code</span>
+                                        </button>
+                                        <button id="shareTextBtn" class="btn-secondary">
+                                            <i class="fas fa-share-square"></i>
+                                            <span>اشتراک مستقیم</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- بخش رمزگشایی -->
+            <section id="decryptSection" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-unlock"></i> رمزگشایی پیام</h2>
+                        <p class="card-subtitle">پیام رمز شده را با کلید مربوطه باز کنید</p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label for="encryptedInput">
+                                <i class="fas fa-file-contract"></i>
+                                پیام رمز شده:
+                            </label>
+                            <textarea 
+                                id="encryptedInput" 
+                                placeholder="پیام رمز شده را اینجا وارد کنید..." 
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="decryptKeyInput">
+                                <i class="fas fa-key"></i>
+                                کلید امنیتی:
+                            </label>
+                            <div class="key-input-wrapper">
+                                <input 
+                                    type="text" 
+                                    id="decryptKeyInput" 
+                                    placeholder="کلید امنیتی را وارد کنید..."
+                                >
+                                <button class="paste-btn" id="pasteKeyBtn">
+                                    <i class="fas fa-paste"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="decryptBtn" class="btn-primary btn-large">
+                                <i class="fas fa-unlock-alt"></i>
+                                <span>رمزگشایی پیام</span>
+                            </button>
+                            <button id="clearDecryptBtn" class="btn-secondary">
+                                <i class="fas fa-trash"></i>
+                                <span>پاک کردن همه</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- نتیجه رمزگشایی -->
+                <div id="decryptResult" class="result-container" style="display: none;">
+                    <div class="card success-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-file-alt"></i> پیام اصلی</h2>
+                            <div class="badge success">
+                                <i class="fas fa-check-circle"></i>
+                                <span>رمزگشایی موفق</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="decrypted-output">
+                                <textarea 
+                                    id="decryptedOutput" 
+                                    readonly 
+                                    rows="8"
+                                    placeholder="پیام اصلی اینجا نمایش داده می‌شود..."
+                                ></textarea>
+                                <div class="output-actions">
+                                    <button id="copyDecryptedBtn" class="btn-success">
+                                        <i class="fas fa-copy"></i>
+                                        <span>کپی متن</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- بخش QR Code -->
+            <section id="qrSection" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-qrcode"></i> تولید و اشتراک‌گذاری QR Code</h2>
+                        <p class="card-subtitle">متن خود را به صورت کد QR تبدیل و به اشتراک بگذارید</p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="qr-input-section">
+                            <div class="input-group">
+                                <label for="qrText">
+                                    <i class="fas fa-edit"></i>
+                                    متن برای تبدیل به QR:
+                                </label>
+                                <div class="qr-textarea-wrapper">
+                                    <textarea 
+                                        id="qrText" 
+                                        placeholder="متن یا پیام رمز شده خود را اینجا وارد کنید..." 
+                                        rows="6"
+                                    ></textarea>
+                                    <div class="qr-actions-top">
+                                        <button class="btn-small" id="loadFromEncryptBtn">
+                                            <i class="fas fa-sync"></i>
+                                            <span>بارگذاری از رمزنگاری</span>
+                                        </button>
+                                        <button class="btn-small" id="clearQRBtn">
+                                            <i class="fas fa-trash"></i>
+                                            <span>پاک کردن</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="qr-options">
+                                <div class="option-group">
+                                    <label for="qrSize">
+                                        <i class="fas fa-expand-alt"></i>
+                                        اندازه QR Code:
+                                    </label>
+                                    <select id="qrSize" class="select-box">
+                                        <option value="128">کوچک (128x128)</option>
+                                        <option value="256" selected>متوسط (256x256)</option>
+                                        <option value="512">بزرگ (512x512)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button id="generateQRBtn" class="btn-primary btn-large">
+                                <i class="fas fa-qrcode"></i>
+                                <span>تولید QR Code</span>
+                            </button>
+                        </div>
+                        
+                        <div class="qr-output-section">
+                            <div class="qr-preview-container">
+                                <div class="qr-wrapper">
+                                    <div id="qrcode"></div>
+                                    <div class="qr-placeholder" id="qrPlaceholder">
+                                        <i class="fas fa-qrcode fa-5x"></i>
+                                        <p>QR Code اینجا نمایش داده می‌شود</p>
+                                        <p class="placeholder-sub">متن خود را وارد و دکمه تولید را بزنید</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="qr-actions">
+                                <h3><i class="fas fa-download"></i> دریافت QR Code:</h3>
+                                <div class="action-buttons-grid">
+                                    <button id="downloadQRBtn" class="btn-success" disabled>
+                                        <i class="fas fa-download"></i>
+                                        <span>دانلود PNG</span>
+                                    </button>
+                                    <button id="printQRBtn" class="btn-secondary" disabled>
+                                        <i class="fas fa-print"></i>
+                                        <span>چاپ</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="qr-sharing-options">
+                                    <h3><i class="fas fa-share-alt"></i> اشتراک‌گذاری:</h3>
+                                    <div class="sharing-buttons">
+                                        <button id="shareWhatsAppBtn" class="share-btn whatsapp" disabled>
+                                            <i class="fab fa-whatsapp"></i>
+                                            <span>واتساپ</span>
+                                        </button>
+                                        <button id="shareTelegramBtn" class="share-btn telegram" disabled>
+                                            <i class="fab fa-telegram"></i>
+                                            <span>تلگرام</span>
+                                        </button>
+                                        <button id="shareEmailBtn" class="share-btn email" disabled>
+                                            <i class="fas fa-envelope"></i>
+                                            <span>ایمیل</span>
+                                        </button>
+                                        <button id="shareCopyBtn" class="share-btn copy" disabled>
+                                            <i class="fas fa-copy"></i>
+                                            <span>کپی لینک</span>
+                                        </button>
+                                        <button id="shareSystemBtn" class="share-btn system" disabled>
+                                            <i class="fas fa-share-alt"></i>
+                                            <span>اشتراک کلی</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-user-secret fa-2x"></i>
+                        <div>
+                            <h3>سایت چت رمزنگاری امیر</h3>
+                            <p>امنیت پیام‌های شما، اولویت ماست</p>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        این ابزار به صورت کامل آفلاین کار می‌کند و هیچ اطلاعاتی به سرور ارسال نمی‌شود.
+                        تمام عملیات رمزنگاری در مرورگر شما انجام می‌شود.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>وضعیت سیستم</h4>
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span class="status-label">نسخه:</span>
+                            <span class="status-value">2.0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">وضعیت:</span>
+                            <span class="status-value">فعال</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">
+                    © ۲۰۲۴ سایت چت رمزنگاری امیر
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- اعلان -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span class="notification-icon" id="notificationIcon">ℹ️</span>
+            <span class="notification-text" id="notificationText"></span>
+        </div>
+    </div>
+
+    <!-- لودینگ -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p id="loadingText">در حال پردازش...</p>
+        </div>
+    </div>
+
+    <!-- واترمارک برای دکمه‌های اشتراک‌گذاری -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="app.js"></script>
+</body>
+</html>
